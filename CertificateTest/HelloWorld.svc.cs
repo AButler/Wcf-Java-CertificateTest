@@ -5,15 +5,21 @@ using System.ServiceModel;
 namespace CertificateTest {
   [ServiceBehavior( InstanceContextMode = InstanceContextMode.Single )]
   public class HelloWorld: IHelloWorld {
+    private readonly bool _inDanish;
     private readonly IDictionary<int, User> _users;
+
 
     public HelloWorld() {
       _users = new Dictionary<int, User>();
+      _inDanish = true;
     }
 
     public GetUsersResponse GetUsers( GetUsersRequest request ) {
       return new GetUsersResponse {
-        Users = _users.Select( u => new IdentifiedUser { Id = u.Key, User = u.Value } ).ToList()
+        Users = _users.Select( u => new IdentifiedUser {                                 
+          Id = u.Key, 
+          User = u.Value                                               
+        } ).ToList()
       };
     }
 
@@ -21,14 +27,18 @@ namespace CertificateTest {
       _users.Add( _users.Count + 1, request.User );
 
       return new SayHiToUserResponse {
-        Reponse = "Hello " + request.User.Name
+        Reponse = Hello + " " + request.User.Name
       };
     }
 
     public SayHiResponse SayHi( SayHiRequest request ) {
       return new SayHiResponse {
-        Reponse = "Hello " + request.Message
+        Reponse = Hello + " " + request.Message
       };
+    }
+
+    private string Hello {
+      get { return _inDanish ? "Hej" : "Hello"; }
     }
   }
 }
